@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tasty Bites Chatbot</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: #f1f3f6;
+      margin: 0;
+      padding: 0;
+    }
+
+    .main-wrapper {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 220px;
+      background-color: #2d2f36;
+      color: white;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+  top: 0;
+  z-index: 10;
+  height: 100%;
+    }
+
+    .sidebar h2 {
+      margin: 0 0 20px;
+      font-size: 22px;
+    }
+
+    .sidebar nav {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      font-size: 16px;
+    }
+
+    .sidebar nav div {
+      cursor: pointer;
+      padding: 8px 10px;
+      border-radius: 8px;
+    }
+
+    .sidebar nav div:hover {
+      background-color: #444;
+    }
+
+    .sidebar .info {
+      margin-top: auto;
+      font-size: 14px;
+      color: #ccc;
+    }
+
+    .sidebar .info hr {
+      border: none;
+      border-top: 1px solid #444;
+      margin: 15px 0;
+    }
+
+   .chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  min-height: 100vh;
+  margin-left: 220px; 
+}
+
+
+    .chat-header {
+      background-color: #f7f9fc;
+      padding: 20px;
+      border-bottom: 1px solid #ddd;
+      text-align: center;
+    }
+
+    .chat-header h2 {
+      margin: 0;
+      font-size: 20px;
+      color: #333;
+    }
+
+    .chat-box {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background-color: #f9f9f9;
+}
+
+
+    .chat-message {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+    }
+
+    .chat-message.user {
+      flex-direction: row-reverse;
+      text-align: right;
+    }
+
+    .chat-message.bot {
+      text-align: left;
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 18px;
+      color: white;
+    }
+
+    .avatar.user {
+      background-color: #7b61ff;
+    }
+
+    .avatar.bot {
+      background-color: #2ec4b6;
+    }
+
+    .bubble {
+      max-width: 70%;
+      padding: 10px 15px;
+      border-radius: 20px;
+      position: relative;
+      line-height: 1.4;
+    }
+
+    .bubble.user {
+      background-color: #d0cbff;
+      color: #333;
+      border-bottom-right-radius: 5px;
+    }
+
+    .bubble.bot {
+      background-color: #e4f9f5;
+      color: #333;
+      border-bottom-left-radius: 5px;
+    }
+
+    .timestamp {
+      font-size: 12px;
+      color: #999;
+      margin-top: 4px;
+    }
+
+   .chat-input {
+  display: flex;
+  padding: 15px;
+  border-top: 1px solid #eee;
+  background-color: #fff;
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+}
+
+
+    input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      margin-right: 10px;
+    }
+
+    button {
+      padding: 10px 15px;
+      background: #ff6347;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    button:hover {
+      background: #e5533d;
+    }
+
+    @media (max-width: 768px) {
+      .main-wrapper {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+      }
+      .sidebar nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .chat-container {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="main-wrapper">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <h2>🍽️ Tasty Bites</h2>
+      <nav>
+        <div data-query="What can you tell me about Tasty Bites restaurant?">🏠 Home</div>
+        <div data-query="Show me your full menu with prices">📋 Menu</div>
+        <div data-query="What are your contact details?">📞 Contact</div>
+        <div data-query="What are your opening hours?">🕒 Timings</div>
+        <div data-query="Tell me more about Tasty Bites restaurant">ℹ️ About</div>
+        <div data-query="Do I have any recent orders?">📦 My Orders</div>
+        <div data-query="I need help with using this assistant">❓ Help</div>
+      </nav>
+      <div class="info">
+        <hr />
+        📍 123 Food Street, Delhi<br/>
+        ☎️ +91-9876543210<br/>
+        🕘 10AM - 11PM
+      </div>
+    </div>
+
+    <!-- Chat Section -->
+    <div class="chat-container">
+      <div class="chat-header">
+        <h2>Chat with Assistant</h2>
+      </div>
+      <div class="chat-box" id="chatBox"></div>
+      <div class="chat-input">
+        <input type="text" id="userInput" placeholder="Ask me something..." />
+        <button id="sendBtn">Send</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // Simplified version without Gemini API for demonstration
+  const chatBox = document.getElementById("chatBox");
+  
+  // Restaurant knowledge base
+  const restaurantInfo = {
+    "about": "Tasty Bites is a cozy restaurant offering delicious Italian, Indian, and Continental cuisine. We pride ourselves on using fresh ingredients and authentic recipes.",
+    "menu": `
+      <strong>Starters:</strong><br>
+      - Garlic Bread: ₹120<br>
+      - Bruschetta: ₹150<br>
+      - Paneer Tikka: ₹180<br><br>
+      
+      <strong>Main Course:</strong><br>
+      - Margherita Pizza: ₹250<br>
+      - Butter Chicken: ₹280<br>
+      - Veg Lasagna: ₹220<br><br>
+      
+      <strong>Desserts:</strong><br>
+      - Tiramisu: ₹150<br>
+      - Gulab Jamun: ₹100<br>
+      - Chocolate Brownie: ₹120<br><br>
+      
+      <strong>Beverages:</strong><br>
+      - Fresh Lime Soda: ₹60<br>
+      - Cappuccino: ₹90<br>
+      - Iced Tea: ₹70
+    `,
+    "contact": "You can reach us at:<br>📞 Phone: +91-9876543210<br>📧 Email: info@tastybites.com<br>📍 Address: 123 Food Street, Delhi",
+    "timings": "We're open every day from 10 AM to 11 PM.",
+    "orders": "I can't access your order history here. Please call our customer service at +91-9876543210 for order inquiries.",
+    "help": "I can help you with:<br>- Menu information<br>- Opening hours<br>- Contact details<br>- General questions about Tasty Bites"
+  };
+
+  function appendMessage(message, sender = "user") {
+    const now = new Date();
+    const time = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+    const div = document.createElement("div");
+    div.className = `chat-message ${sender}`;
+    div.innerHTML = `
+      <div class="avatar ${sender}">${sender === "user" ? "Me" : "TB"}</div>
+      <div>
+        <div class="bubble ${sender}">${message}</div>
+        <div class="timestamp">${time}</div>
+      </div>
+    `;
+    chatBox.appendChild(div);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  function handleChat(messageText) {
+    appendMessage(messageText, "user");
+    
+    // Simulate thinking delay
+    setTimeout(() => {
+      let response = "I'm sorry, I didn't understand that question.";
+      
+      if (messageText.includes("menu") || messageText.includes("Menu")) {
+        response = restaurantInfo.menu;
+      } 
+      else if (messageText.includes("contact") || messageText.includes("Contact")) {
+        response = restaurantInfo.contact;
+      }
+      else if (messageText.includes("timings") || messageText.includes("Timings") || messageText.includes("hours")) {
+        response = restaurantInfo.timings;
+      }
+      else if (messageText.includes("about") || messageText.includes("About")) {
+        response = restaurantInfo.about;
+      }
+      else if (messageText.includes("orders") || messageText.includes("Orders")) {
+        response = restaurantInfo.orders;
+      }
+      else if (messageText.includes("help") || messageText.includes("Help")) {
+        response = restaurantInfo.help;
+      }
+      else if (messageText.includes("home") || messageText.includes("Home") || messageText.includes("Tasty Bites")) {
+        response = restaurantInfo.about;
+      }
+      
+      appendMessage(response, "bot");
+    }, 800);
+  }
+
+  // User typed and hit enter or clicked Send
+  function sendMessage() {
+    const input = document.getElementById("userInput");
+    const message = input.value.trim();
+    if (!message) return;
+
+    input.value = "";
+    handleChat(message);
+  }
+
+  document.getElementById("sendBtn").addEventListener("click", sendMessage);
+  document.getElementById("userInput").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") sendMessage();
+  });
+
+  // Initialize with a welcome message
+  window.addEventListener('DOMContentLoaded', () => {
+    appendMessage("Hello! Welcome to Tasty Bites. How can I assist you today?", "bot");
+  });
+
+  // Sidebar click handlers - now working without API
+  document.querySelectorAll(".sidebar nav div").forEach(item => {
+    item.addEventListener("click", () => {
+      const query = item.getAttribute('data-query');
+      if (query) handleChat(query);
+    });
+  });
+</script>
+
+</body>
+</html>
