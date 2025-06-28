@@ -222,7 +222,7 @@
 <body>
 
   <div class="main-wrapper">
-    <!-- Sidebar -->
+    
     <div class="sidebar">
       <h2>🍽️ Tasty Bites</h2>
       <nav>
@@ -242,7 +242,7 @@
       </div>
     </div>
 
-    <!-- Chat Section -->
+    
     <div class="chat-container">
       <div class="chat-header">
         <h2>Chat with Assistant</h2>
@@ -256,7 +256,7 @@
   </div>
 
 <script>
-  // Simplified version without Gemini API for demonstration
+ 
   const chatBox = document.getElementById("chatBox");
   
   // Restaurant knowledge base
@@ -309,7 +309,7 @@
   function handleChat(messageText) {
     appendMessage(messageText, "user");
     
-    // Simulate thinking delay
+   
     setTimeout(() => {
       let response = "I'm sorry, I didn't understand that question.";
       
@@ -339,7 +339,7 @@
     }, 800);
   }
 
-  // User typed and hit enter or clicked Send
+ 
   function sendMessage() {
     const input = document.getElementById("userInput");
     const message = input.value.trim();
@@ -354,12 +354,11 @@
     if (e.key === "Enter") sendMessage();
   });
 
-  // Initialize with a welcome message
   window.addEventListener('DOMContentLoaded', () => {
     appendMessage("Hello! Welcome to Tasty Bites. How can I assist you today?", "bot");
   });
 
-  // Sidebar click handlers - now working without API
+  
   document.querySelectorAll(".sidebar nav div").forEach(item => {
     item.addEventListener("click", () => {
       const query = item.getAttribute('data-query');
